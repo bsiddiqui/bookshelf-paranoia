@@ -1,6 +1,6 @@
 {
   "name": "bookshelf-paranoia",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Safely get the sum of numbers",
   "main": "index.js",
   "scripts": {
@@ -21,8 +21,7 @@
     "url": "https://github.com/bsiddiqui/bookshelf-paranoia/issues"
   },
   "homepage": "https://github.com/bsiddiqui/bookshelf-paranoia#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "standard": "^5.2.2",
     "tape": "^4.2.0"
