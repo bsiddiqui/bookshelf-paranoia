@@ -1,0 +1,30 @@
+{
+  "name": "bookshelf-paranoia",
+  "version": "0.0.0",
+  "description": "Safely get the sum of numbers",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bsiddiqui/bookshelf-paranoia.git"
+  },
+  "keywords": [
+    "add",
+    "math",
+    "sum"
+  ],
+  "author": "Basil Siddiqui <basil.siddiqui@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bsiddiqui/bookshelf-paranoia/issues"
+  },
+  "homepage": "https://github.com/bsiddiqui/bookshelf-paranoia#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "standard": "^5.2.2",
+    "tape": "^4.2.0"
+  }
+}
