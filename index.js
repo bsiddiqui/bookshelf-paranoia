@@ -10,7 +10,7 @@ module.exports = function (bookshelf) {
 
       function skipDeleted (model, column, options) {
         if (this.softDelete === true && options.withDeleted !== true) {
-          return options.query.whereNotNull('deleted_at')
+          return options.query.whereNull('deleted_at')
         } else {
           return
         }
