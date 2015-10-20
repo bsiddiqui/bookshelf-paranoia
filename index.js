@@ -2,27 +2,30 @@ module.exports = function (bookshelf) {
   var modelPrototype = bookshelf.Model.prototype
 
   bookshelf.Model = bookshelf.Model.extend({
-    sync: function (options) {
-      var sync = modelPrototype.sync.apply(this, arguments)
+    initialize: function () {
+      modelPrototype.initialize.call(this)
 
-      if (this.softDelete === true && options.withDeleted !== true) {
-        var originalSelect = sync.select
+      this.on('fetching', skipDeleted)
+      this.on('fetching:collection', skipDeleted)
 
-        sync.select = function () {
-          sync.query.whereNull('deleted_at')
-          return originalSelect.call(sync)
+      function skipDeleted (model, column, options) {
+        if (this.softDelete === true && options.withDeleted !== true) {
+          return options.query.whereNotNull('deleted_at')
+        } else {
+          return
         }
       }
+    },
 
-      if (options.hardDelete !== true && (this.softDelete === true || options.softDelete === true)) {
-        /* eslint-disable no-useless-call */
-        sync.del = function () {
-          return sync.update.call(sync, { deleted_at: new Date() })
-        }
-        /* eslint-enable no-useless-call */
+    destroy: function (options) {
+      options = options || {}
+      if (this.softDelete === true && options.hardDelete !== true) {
+        options.patch = true
+        return this.save({ deleted_at: new Date() })
+      } else {
+        return modelPrototype.destroy.apply(this, arguments)
       }
-
-      return sync
     }
   })
 }
+
