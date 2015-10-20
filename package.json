@@ -1,6 +1,6 @@
 {
   "name": "bookshelf-paranoia",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Safely get the sum of numbers",
   "main": "index.js",
   "scripts": {
