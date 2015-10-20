@@ -21,7 +21,9 @@
     "url": "https://github.com/bsiddiqui/bookshelf-paranoia/issues"
   },
   "homepage": "https://github.com/bsiddiqui/bookshelf-paranoia#readme",
-  "dependencies": {},
+  "dependencies": {
+    "lodash.result": "^3.1.2"
+  },
   "devDependencies": {
     "standard": "^5.2.2",
     "tape": "^4.2.0"

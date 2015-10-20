@@ -1,3 +1,5 @@
+var result = require('lodash.result')
+
 module.exports = function (bookshelf) {
   var modelPrototype = bookshelf.Model.prototype
 
@@ -10,7 +12,7 @@ module.exports = function (bookshelf) {
 
       function skipDeleted (model, column, options) {
         if (this.softDelete === true && options.withDeleted !== true) {
-          return options.query.whereNull('deleted_at')
+          return options.query.whereNull(result(this, 'tableName') + '.' + 'deleted_at')
         } else {
           return
         }
