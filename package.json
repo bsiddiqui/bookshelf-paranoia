@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bsiddiqui/bookshelf-paranoia.git"
+    "url": "git+https://github.com/estate/bookshelf-paranoia.git"
   },
   "keywords": [
     "bookshelf",
@@ -25,12 +25,12 @@
     "database",
     "soft"
   ],
-  "author": "Basil Siddiqui <basil.siddiqui@gmail.com>",
+  "author": "Estate <team@tryestate.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bsiddiqui/bookshelf-paranoia/issues"
+    "url": "https://github.com/estate/bookshelf-paranoia/issues"
   },
-  "homepage": "https://github.com/bsiddiqui/bookshelf-paranoia#readme",
+  "homepage": "https://github.com/estate/bookshelf-paranoia#readme",
   "dependencies": {
     "lodash.result": "^4.3.0"
   },
@@ -38,7 +38,6 @@
     "bookshelf": "^0.9.4",
     "co": "^4.6.0",
     "code": "^2.2.0",
-    "coveralls": "^2.11.9",
     "knex": "^0.10.0",
     "lab": "^10.3.1",
     "sqlite": "0.0.4",
