@@ -1,5 +1,5 @@
 # bookshelf-paranoia
-[![Build Status](https://circleci.com/gh/estate/bookshelf-paranoia.svg?style=svg)](https://circleci.com/gh/estate/bookshelf-paranoia)
+[![Build Status](https://circleci.com/gh/estate/bookshelf-paranoia.svg?style=shield)](https://circleci.com/gh/estate/bookshelf-paranoia)
 [![Code Climate](https://codeclimate.com/github/estate/bookshelf-paranoia/badges/gpa.svg)](https://codeclimate.com/github/estate/bookshelf-paranoia)
 [![Test Coverage](https://codeclimate.com/github/estate/bookshelf-paranoia/badges/coverage.svg)](https://codeclimate.com/github/estate/bookshelf-paranoia/coverage)
 [![Version](https://badge.fury.io/js/bookshelf-paranoia.svg)](http://badge.fury.io/js/bookshelf-paranoia)
