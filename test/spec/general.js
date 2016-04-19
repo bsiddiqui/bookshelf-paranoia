@@ -47,7 +47,7 @@ lab.experiment('general tests', () => {
     expect(comment.get('deleted_at')).to.be.a.number()
   }))
 
-  lab.test('should hard delete when model do not have soft delete configured', co.wrap(function * () {
+  lab.test('should hard delete when models do not have soft delete configured', co.wrap(function * () {
     yield User.forge({ id: 1 }).destroy()
 
     expect(yield db.knex('users').select('*').where('id', 1)).to.have.length(0)

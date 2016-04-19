@@ -1,0 +1,14 @@
+machine:
+  environment:
+    DATABASE_URL: postgres://ubuntu@localhost/circle_test
+    NODE_ENV: test
+  services:
+    - postgresql
+  node:
+    version: v4.3
+test:
+  override:
+    - npm run test-cov
+  post:
+    - npm install -g codeclimate-test-reporter
+    - CODECLIMATE_REPO_TOKEN=09e22c22250c23f7806239f0258d34f14420ee325d586772d5a3048dbebd2e6c codeclimate-test-reporter < coverage/lcov.info
