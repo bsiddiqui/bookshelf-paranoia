@@ -1,9 +1,6 @@
 machine:
   environment:
-    DATABASE_URL: postgres://ubuntu@localhost/circle_test
     NODE_ENV: test
-  services:
-    - postgresql
   node:
     version: v4.3
 test:
