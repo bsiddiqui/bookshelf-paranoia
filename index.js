@@ -1,6 +1,7 @@
 'use strict'
 
 let result = require('lodash.result')
+let merge = require('lodash.merge')
 
 /**
  * A function that can be used as a plugin for bookshelf
@@ -11,7 +12,17 @@ let result = require('lodash.result')
  */
 module.exports = (bookshelf, settings) => {
   // Add default settings
-  settings = Object.assign({ field: 'deleted_at' }, settings)
+  settings = merge({
+    field: 'deleted_at',
+    events: {
+      destroying: true,
+      updating: false,
+      saving: false,
+      destroyed: true,
+      updated: false,
+      saved: false
+    }
+  }, settings)
 
   /**
    * Check if the operation needs to be patched for not retrieving
@@ -64,8 +75,81 @@ module.exports = (bookshelf, settings) => {
     destroy: function (options) {
       options = options || {}
       if (this.softDelete === true && options.hardDelete !== true) {
-        options.patch = true
-        return this.save({ [settings.field]: new Date() }, options)
+        // Add default values to options
+        options = merge(options, {
+          method: 'update',
+          patch: true,
+          softDelete: true
+        })
+
+        // Attributes to be passed to events
+        let attrs = { [settings.field]: new Date() }
+
+        return Promise.resolve()
+        .then(() => {
+          // Don't need to trigger hooks if there's no events registered
+          if (!settings.events) return
+
+          let events = []
+
+          // Emulate all pre update events
+          if (settings.events.destroying) {
+            events.push(this.triggerThen('destroying', this, options).bind(this))
+          }
+
+          if (settings.events.saving) {
+            events.push(this.triggerThen('saving', this, attrs, options).bind(this))
+          }
+
+          if (settings.events.updating) {
+            events.push(this.triggerThen('updating', this, attrs, options).bind(this))
+          }
+
+          // Resolve all promises in parallel like bookshelf does
+          return Promise.all(events)
+        })
+        .then(() => {
+          let knex = bookshelf.knex(this.tableName)
+
+          // Check if we need to use a transaction
+          if (options.transacting) {
+            knex = knex.transacting(options.transacting)
+          }
+
+          return knex.update(attrs, this.idAttribute).where(this.attributes)
+        })
+        .then((resp) => {
+          // Check if the caller required a row to be deleted and if
+          // events weren't totally disabled
+          if (!resp && options.require) {
+            throw new this.constructor.NoRowsDeletedError('No Rows Deleted')
+          } else if (!settings.events) {
+            return
+          }
+
+          // Add previous attr for reference and reset the model to pristine state
+          this.set(attrs)
+          options.previousAttributes = this._previousAttributes
+          this._reset()
+
+          let events = []
+
+          // Emulate all post update events
+          if (settings.events.destroyed) {
+            events.push(this.triggerThen('destroyed', this, options).bind(this))
+          }
+
+          if (settings.events.saved) {
+            events.push(this.triggerThen('saved', this, resp, options).bind(this))
+          }
+
+          if (settings.events.updated) {
+            events.push(this.triggerThen('updated', this, resp, options).bind(this))
+          }
+
+          return Promise.all(events)
+        })
+        .then(() => this)
       } else {
         return modelPrototype.destroy.call(this, options)
       }

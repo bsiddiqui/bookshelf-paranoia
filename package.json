@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/estate/bookshelf-paranoia#readme",
   "dependencies": {
+    "lodash.merge": "^4.3.5",
     "lodash.result": "^4.3.0"
   },
   "devDependencies": {

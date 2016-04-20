@@ -62,6 +62,48 @@ yield User.forge({ id: 1000 }).destroy({ hardDelete: true })
 // Retrieve a soft deleted row even with the plugin enabled. Works for
 // eager loaded relations too
 let user = yield User.forge({ id: 1000 }).fetch({ withDeleted: true })
+
+// By default soft deletes also emit "destroying" and "destroyed" events. You
+// can easily disable this behavior when setting the plugin
+bookshelf.plugin(require('bookshelf-paranoia'), { events: false })
+
+// Disable only one event
+bookshelf.plugin(require('bookshelf-paranoia'), {
+  events: { destroying: false }
+})
+
+// Enable saving, updating, saved, and updated. This will turn on all events
+// since destroying and destroyed are already on by default
+bookshelf.plugin(require('bookshelf-paranoia'), {
+  events: {
+    saving: true,
+    updating: true,
+    saved: true,
+    updated: true
+  }
+})
+```
+
+### Detecting soft deletes
+
+By listening to the default events emitted by bookshelf when destroying a model
+you're able to detect if that model is being soft deleted.
+
+```javascript
+let model = new User({ id: 1000 })
+
+// Watch for deletes as usual
+model.on('destroying', (model, options) => {
+  if (options.softDelete) console.log(`User ${model.id} is being soft deleted!`)
+})
+
+model.on('destroying', (model, options) => {
+  if (options.softDelete) console.log(`User ${model.id} has been soft deleted!`)
+})
+
+yield model.destroy()
+// User 1000 is being soft deleted!
+// User 1000 has been soft deleted!
 ```
 
 ### Testing
