@@ -34,10 +34,12 @@ module.exports = (bookshelf, settings) => {
    * and allow querying soft deleted objects
    */
   function skipDeleted (model, attrs, options) {
-    let softDelete = this.model ? this.model.prototype.softDelete : this.softDelete
+    if (!options.isEager || options.parentResponse) {
+      let softDelete = this.model ? this.model.prototype.softDelete : this.softDelete
 
-    if (softDelete === true && options.withDeleted !== true) {
-      options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
+      if (softDelete === true && options.withDeleted !== true) {
+        options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
+      }
     }
   }
 
