@@ -116,7 +116,7 @@ module.exports = (bookshelf, settings) => {
             knex = knex.transacting(options.transacting)
           }
 
-          return knex.update(attrs, this.idAttribute).where(this.attributes)
+          return knex.update(attrs, this.idAttribute).where(this.format(this.attributes))
         })
         .then((resp) => {
           // Check if the caller required a row to be deleted and if
@@ -156,4 +156,3 @@ module.exports = (bookshelf, settings) => {
     }
   })
 }
-
