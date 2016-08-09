@@ -8,5 +8,9 @@ module.exports = db.bookshelf.model('Tag', {
 
   articles: function () {
     return this.belongsToMany('Article').through('ArticleTag')
+  },
+
+  articleOrTag: function () {
+    return this.morphOne('ArticleOrTag', 'source')
   }
 })
