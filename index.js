@@ -54,6 +54,7 @@ module.exports = (bookshelf, settings) => {
       collectionPrototype.initialize.call(this)
 
       this.on('fetching', skipDeleted.bind(this))
+      this.on('counting', (collection, options) => skipDeleted.call(this, null, null, options))
     }
   })
 
