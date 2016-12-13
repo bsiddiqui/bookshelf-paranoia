@@ -115,7 +115,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow overriding the field name', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), { field: 'deleted' })
     })
 
@@ -134,7 +134,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow overriding the destroyed event', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), {
         field: 'deleted',
         events: { destroyed: false }
@@ -157,7 +157,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow overriding the destroying event', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), {
         field: 'deleted',
         events: { destroying: false }
@@ -180,7 +180,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow overriding the saving event', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), {
         field: 'deleted',
         events: {
@@ -208,7 +208,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow overriding the updating event', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), {
         field: 'deleted',
         events: {
@@ -236,7 +236,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow overriding the saved event', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), {
         field: 'deleted',
         events: {
@@ -264,7 +264,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow overriding the updated event', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), {
         field: 'deleted',
         events: {
@@ -292,7 +292,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should allow disabling events', co.wrap(function * () {
     // Create a new bookshelf instance
-    let bookshelf = yield customDb.testTable((bookshelf) => {
+    let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), {
         field: 'deleted',
         events: false
