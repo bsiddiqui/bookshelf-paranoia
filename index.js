@@ -8,12 +8,15 @@ let merge = require('lodash.merge')
  * @param {Object} bookshelf The main bookshelf instance
  * @param {Object} [settings] Additional settings for configuring this plugin
  * @param {String} [settings.field=deleted_at] The name of the field that stores
- * the soft delete information for that model
+ *   the soft delete information for that model
+ * @param {String?} [settings.sentinel=null] The name of the field that stores
+ *   the model's active state as a boolean for unique indexing purposes, if any
  */
 module.exports = (bookshelf, settings) => {
   // Add default settings
   settings = merge({
     field: 'deleted_at',
+    sentinel: null,
     events: {
       destroying: true,
       updating: false,
@@ -63,6 +66,12 @@ module.exports = (bookshelf, settings) => {
     initialize: function () {
       modelPrototype.initialize.call(this)
 
+      if (settings.sentinel) {
+        this.defaults = merge({
+          [settings.sentinel]: true
+        }, result(this, 'defaults'))
+      }
+
       this.on('fetching', skipDeleted.bind(this))
       this.on('fetching:collection', skipDeleted.bind(this))
     },
@@ -87,6 +96,10 @@ module.exports = (bookshelf, settings) => {
 
         // Attributes to be passed to events
         let attrs = { [settings.field]: new Date() }
+        // Null out sentinel column, since NULL is not considered by SQL unique indexes
+        if (settings.sentinel) {
+          attrs[settings.sentinel] = null
+        }
 
         return Promise.resolve()
         .then(() => {

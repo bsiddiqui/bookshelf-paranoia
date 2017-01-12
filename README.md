@@ -84,6 +84,35 @@ bookshelf.plugin(require('bookshelf-paranoia'), {
 })
 ```
 
+### Sentinels/Uniqueness
+
+Due to limitations with some DBMSes, constraining a soft-delete-enabled
+model to "only one active instance" is difficult: any unique index will
+capture both undeleted and deleted rows. There are ways around this,
+e.g., scoped indexes (WHERE deleted_at IS NULL), but the most portable
+method involves adding a so-called sentinel column: a field that is true/1
+when the row is active and NULL when it has been deleted. Since unique
+indexes do not consider null fields, this allows a compound unique index
+to fulfill our needs: indexing ['email', 'active'] will ensure only one
+unique active email at a time, for example.
+
+To maintain backward compatibility, sentinel functionality is disabled
+by default. It can be enabled globally by setting the `sentinel` config
+value to the name of the sentinel column, nominally "active". The
+sentinel column should be added to all soft-deletable tables via
+migration as a nullable boolean field.
+
+```javascript
+// Enable sentinel values stored under "active"
+bookshelf.plugin(require('bookshelf-paranoia'), { sentinel: 'active' })
+
+let user = yield User.forge().save()
+user.get('active')  // will be true
+
+yield user.destroy()
+user.get('active')  // will be false
+```
+
 ### Detecting soft deletes
 
 By listening to the default events emitted by bookshelf when destroying a model
