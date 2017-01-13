@@ -66,7 +66,7 @@ module.exports = (bookshelf, settings) => {
     initialize: function () {
       modelPrototype.initialize.call(this)
 
-      if (settings.sentinel) {
+      if (this.softDelete === true && settings.sentinel) {
         this.defaults = merge({
           [settings.sentinel]: true
         }, result(this, 'defaults'))

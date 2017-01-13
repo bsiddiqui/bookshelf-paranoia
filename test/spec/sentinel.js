@@ -43,6 +43,16 @@ lab.experiment('sentinel', () => {
     expect(model.has('active')).to.be.false()
   }))
 
+  lab.test('should do nothing if soft deletion is not enabled', co.wrap(function * () {
+    let bookshelf = yield customDb.sentinelTable((bookshelf) => {
+      bookshelf.plugin(require('../../'), { sentinel: 'active' })
+    })
+    let Model = bookshelf.Model.extend({ tableName: 'test' })
+
+    let model = yield Model.forge().save().then((m) => m.destroy())
+    expect(model.has('active')).to.be.false()
+  }))
+
   lab.test('should error if the sentinel column does not exist', co.wrap(function * () {
     let bookshelf = yield customDb.altFieldTable((bookshelf) => {
       bookshelf.plugin(require('../../'), { sentinel: 'active' })
