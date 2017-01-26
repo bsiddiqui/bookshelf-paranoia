@@ -125,7 +125,7 @@ module.exports = (bookshelf, settings) => {
           return Promise.all(events)
         })
         .then(() => {
-          let knex = bookshelf.knex(this.tableName)
+          let knex = this.query()
 
           // Check if we need to use a transaction
           if (options.transacting) {
