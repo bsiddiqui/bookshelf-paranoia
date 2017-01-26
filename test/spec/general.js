@@ -48,6 +48,20 @@ lab.experiment('general tests', () => {
     expect(err).to.be.an.error('No Rows Deleted')
   }))
 
+  lab.test('should preserve original query object', co.wrap(function * () {
+    yield Comment.forge({ article_id: 1 }).query((qb) => qb.where('id', 1)).destroy()
+    let comment1 = yield Comment.forge({ id: 1 }).fetch()
+    let comment2 = yield Comment.forge({ id: 2 }).fetch()
+    expect(comment1).to.be.null()
+    expect(comment2).to.not.be.null()
+  }))
+
+  lab.test('should delete according to query object', co.wrap(function * () {
+    yield Comment.query((qb) => qb.where('id', 2)).destroy()
+    let comment = yield Comment.forge({ id: 1 }).fetch()
+    expect(comment).to.not.be.null()
+  }))
+
   lab.test('should allow override when destroying', co.wrap(function * () {
     yield Comment.forge({ id: 1 }).destroy()
 
@@ -312,4 +326,3 @@ lab.experiment('general tests', () => {
     expect(events).to.have.length(0)
   }))
 })
-
