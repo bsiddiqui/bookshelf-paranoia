@@ -2,6 +2,7 @@
 
 let result = require('lodash.result')
 let merge = require('lodash.merge')
+let isEmpty = require('lodash.isempty')
 
 /**
  * A function that can be used as a plugin for bookshelf
@@ -137,7 +138,7 @@ module.exports = (bookshelf, settings) => {
         .then((resp) => {
           // Check if the caller required a row to be deleted and if
           // events weren't totally disabled
-          if (!resp && options.require) {
+          if (isEmpty(resp) && options.require) {
             throw new this.constructor.NoRowsDeletedError('No Rows Deleted')
           } else if (!settings.events) {
             return
