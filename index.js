@@ -102,6 +102,9 @@ module.exports = (bookshelf, settings) => {
           attrs[settings.sentinel] = null
         }
 
+        // Make sure the field is formatted the same as other date columns
+        attrs = this.format(attrs)
+
         return Promise.resolve()
         .then(() => {
           // Don't need to trigger hooks if there's no events registered
