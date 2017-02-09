@@ -103,7 +103,7 @@ module.exports = (bookshelf, settings) => {
         }
 
         // Make sure the field is formatted the same as other date columns
-        attrs = this.format(attrs);
+        attrs = this.format(attrs)
 
         return Promise.resolve()
         .then(() => {
