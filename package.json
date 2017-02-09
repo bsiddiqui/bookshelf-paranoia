@@ -1,6 +1,6 @@
 {
   "name": "bookshelf-paranoia",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Soft delete data from your database",
   "main": "index.js",
   "scripts": {
