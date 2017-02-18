@@ -40,13 +40,23 @@ lab.experiment('general tests', () => {
     expect(comment.get('deleted_at')).to.be.null()
   }))
 
-  lab.test('should throw when required', co.wrap(function * () {
-    let err = yield Comment.forge({ id: 12345 })
-    .destroy({ require: true })
-    .catch((err) => err)
+  lab.experiment('errors', () => {
+    lab.test('should throw when required', co.wrap(function * () {
+      let err = yield Comment.forge({ id: 12345 })
+      .destroy({ require: true })
+      .catch((err) => err)
 
-    expect(err).to.be.an.error('No Rows Deleted')
-  }))
+      expect(err).to.be.an.error('No Rows Deleted')
+    }))
+
+    lab.test('allows for filtered catch', co.wrap(function * () {
+      let err = yield Comment.forge({ id: 12345 })
+      .destroy({ require: true })
+      .catch(db.bookshelf.Model.NoRowsDeletedError, (err) => err)
+
+      expect(err).to.be.an.error('No Rows Deleted')
+    }))
+  })
 
   lab.test('should preserve original query object', co.wrap(function * () {
     yield Comment.forge({ article_id: 1 }).query((qb) => qb.where('id', 1)).destroy()
