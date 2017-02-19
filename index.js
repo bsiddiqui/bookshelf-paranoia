@@ -1,5 +1,6 @@
 'use strict'
 
+let Promise = require('bluebird')
 let result = require('lodash.result')
 let merge = require('lodash.merge')
 let isEmpty = require('lodash.isempty')
