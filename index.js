@@ -90,11 +90,11 @@ module.exports = (bookshelf, settings) => {
       options = options || {}
       if (this.softDelete === true && options.hardDelete !== true) {
         // Add default values to options
-        options = merge(options, {
+        options = merge({
           method: 'update',
           patch: true,
           softDelete: true
-        })
+        }, options)
 
         // Attributes to be passed to events
         let attrs = { [settings.field]: new Date() }
