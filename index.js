@@ -42,7 +42,7 @@ module.exports = (bookshelf, settings) => {
     if (!options.isEager || options.parentResponse) {
       let softDelete = this.model ? this.model.prototype.softDelete : this.softDelete
 
-      if (softDelete === true && options.withDeleted !== true) {
+      if (softDelete && !options.withDeleted) {
         options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
       }
     }
@@ -68,7 +68,7 @@ module.exports = (bookshelf, settings) => {
     initialize: function () {
       modelPrototype.initialize.call(this)
 
-      if (this.softDelete === true && settings.sentinel) {
+      if (this.softDelete && settings.sentinel) {
         this.defaults = merge({
           [settings.sentinel]: true
         }, result(this, 'defaults'))
@@ -88,7 +88,7 @@ module.exports = (bookshelf, settings) => {
      */
     destroy: function (options) {
       options = options || {}
-      if (this.softDelete === true && options.hardDelete !== true) {
+      if (this.softDelete && !options.hardDelete) {
         // Add default values to options
         options = merge({
           method: 'update',
