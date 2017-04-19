@@ -97,10 +97,10 @@ module.exports = (bookshelf, settings) => {
           softDelete: true
         }, options)
 
-        const now = options.date ? new Date(options.date) : new Date()
+        const date = options.date ? new Date(options.date) : new Date()
 
         // Attributes to be passed to events
-        let attrs = { [settings.field]: now }
+        let attrs = { [settings.field]: date }
         // Null out sentinel column, since NULL is not considered by SQL unique indexes
         if (settings.sentinel) {
           attrs[settings.sentinel] = null

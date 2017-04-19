@@ -28,7 +28,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should work with user-provided time as Date', co.wrap(function * () {
     const now = new Date()
-    let model = yield Comment.forge({ id: 1 }).destroy({ currentTime: now })
+    let model = yield Comment.forge({ id: 1 }).destroy({ date: now })
 
     let comment = yield Comment.forge({ id: 1 }).fetch()
     expect(comment).to.be.null()
@@ -41,7 +41,7 @@ lab.experiment('general tests', () => {
 
   lab.test('should work with user-provided time as milliseconds', co.wrap(function * () {
     const now = Date.now()
-    let model = yield Comment.forge({ id: 1 }).destroy({ currentTime: now })
+    let model = yield Comment.forge({ id: 1 }).destroy({ date: now })
 
     let comment = yield Comment.forge({ id: 1 }).fetch()
     expect(comment).to.be.null()
