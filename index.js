@@ -83,8 +83,7 @@ module.exports = (bookshelf, settings) => {
      * @param {Object} [options] The default options parameters from Model.destroy
      * @param {Boolean} [options.hardDelete=false] Override the default soft
      * delete behavior and allow a model to be hard deleted
-     * @param {Number|Date} [options.currentTime=false] Override the default Date.now() with a
-     * client supplied time
+     * @param {Number|Date} [options.currentTime=new Date()] Use a client supplied time
      * @return {Promise} A promise that's fulfilled when the model has been
      * hard or soft deleted
      */
