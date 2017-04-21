@@ -126,7 +126,7 @@ model.on('destroying', (model, options) => {
   if (options.softDelete) console.log(`User ${model.id} is being soft deleted!`)
 })
 
-model.on('destroying', (model, options) => {
+model.on('destroyed', (model, options) => {
   if (options.softDelete) console.log(`User ${model.id} has been soft deleted!`)
 })
 
