@@ -89,11 +89,13 @@ module.exports = (bookshelf, settings) => {
     destroy: function (options) {
       options = options || {}
       if (this.softDelete === true && options.hardDelete !== true) {
+        let query = this.query()
         // Add default values to options
         options = merge(options, {
           method: 'update',
           patch: true,
-          softDelete: true
+          softDelete: true,
+          query
         })
 
         // Attributes to be passed to events
@@ -130,14 +132,12 @@ module.exports = (bookshelf, settings) => {
           return Promise.all(events)
         })
         .then(() => {
-          let knex = this.query()
-
           // Check if we need to use a transaction
           if (options.transacting) {
-            knex = knex.transacting(options.transacting)
+            query = query.transacting(options.transacting)
           }
 
-          return knex.update(attrs, this.idAttribute).where(this.format(this.attributes))
+          return query.update(attrs, this.idAttribute).where(this.format(this.attributes))
         })
         .then((resp) => {
           // Check if the caller required a row to be deleted and if

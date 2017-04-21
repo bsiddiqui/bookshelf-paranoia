@@ -335,4 +335,14 @@ lab.experiment('general tests', () => {
 
     expect(events).to.have.length(0)
   }))
+
+  lab.test('should pass query to events like bookshelf', co.wrap(function * () {
+    let model = Comment.forge({ id: 3 })
+
+    model.on('destroying', (model, options) => {
+      expect(options.query).to.exist()
+    })
+
+    yield model.destroy()
+  }))
 })
