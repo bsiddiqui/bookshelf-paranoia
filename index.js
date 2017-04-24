@@ -42,7 +42,7 @@ module.exports = (bookshelf, settings) => {
     if (!options.isEager || options.parentResponse) {
       let softDelete = this.model ? this.model.prototype.softDelete : this.softDelete
 
-      if (softDelete === true && options.withDeleted !== true) {
+      if (softDelete && !options.withDeleted) {
         options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
       }
     }
@@ -68,7 +68,7 @@ module.exports = (bookshelf, settings) => {
     initialize: function () {
       modelPrototype.initialize.call(this)
 
-      if (this.softDelete === true && settings.sentinel) {
+      if (this.softDelete && settings.sentinel) {
         this.defaults = merge({
           [settings.sentinel]: true
         }, result(this, 'defaults'))
@@ -83,23 +83,26 @@ module.exports = (bookshelf, settings) => {
      * @param {Object} [options] The default options parameters from Model.destroy
      * @param {Boolean} [options.hardDelete=false] Override the default soft
      * delete behavior and allow a model to be hard deleted
+     * @param {Number|Date} [options.date=new Date()] Use a client supplied time
      * @return {Promise} A promise that's fulfilled when the model has been
      * hard or soft deleted
      */
     destroy: function (options) {
       options = options || {}
-      if (this.softDelete === true && options.hardDelete !== true) {
+      if (this.softDelete && !options.hardDelete) {
         let query = this.query()
         // Add default values to options
-        options = merge(options, {
+        options = merge({
           method: 'update',
           patch: true,
           softDelete: true,
-          query
-        })
+          query: query
+        }, options)
+
+        const date = options.date ? new Date(options.date) : new Date()
 
         // Attributes to be passed to events
-        let attrs = { [settings.field]: new Date() }
+        let attrs = { [settings.field]: date }
         // Null out sentinel column, since NULL is not considered by SQL unique indexes
         if (settings.sentinel) {
           attrs[settings.sentinel] = null
