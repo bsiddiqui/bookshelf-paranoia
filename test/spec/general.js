@@ -26,6 +26,32 @@ lab.experiment('general tests', () => {
     expect(model.get('deleted_at')).to.be.a.date()
   }))
 
+  lab.test('should work with user-provided time as Date', co.wrap(function * () {
+    const now = new Date()
+    let model = yield Comment.forge({ id: 1 }).destroy({ date: now })
+
+    let comment = yield Comment.forge({ id: 1 }).fetch()
+    expect(comment).to.be.null()
+
+    comment = yield db.knex('comments').select('*').where('id', 1)
+    expect(comment[0].deleted_at).to.be.a.number()
+    expect(model.get('deleted_at')).to.be.a.date()
+    expect(model.get('deleted_at').getTime()).to.equal(now.getTime())
+  }))
+
+  lab.test('should work with user-provided time as milliseconds', co.wrap(function * () {
+    const now = Date.now()
+    let model = yield Comment.forge({ id: 1 }).destroy({ date: now })
+
+    let comment = yield Comment.forge({ id: 1 }).fetch()
+    expect(comment).to.be.null()
+
+    comment = yield db.knex('comments').select('*').where('id', 1)
+    expect(comment[0].deleted_at).to.be.a.number()
+    expect(model.get('deleted_at')).to.be.a.date()
+    expect(model.get('deleted_at').getTime()).to.equal(now)
+  }))
+
   lab.test('should work with transactions', co.wrap(function * () {
     let err = yield db.bookshelf.transaction((transacting) => {
       return Comment.forge({ id: 1 })
