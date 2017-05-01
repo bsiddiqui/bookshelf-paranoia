@@ -26,6 +26,16 @@ lab.experiment('general tests', () => {
     expect(model.get('deleted_at')).to.be.a.date()
   }))
 
+  lab.test('should not be able to delete twice', co.wrap(function * () {
+    yield Comment.forge({ id: 1 }).destroy()
+
+    const error = yield Comment.forge({ id: 1 })
+      .destroy({ require: true })
+      .catch((err) => err)
+
+    expect(error).to.be.instanceOf(Comment.NoRowsDeletedError)
+  }))
+
   lab.test('should work with user-provided time as Date', co.wrap(function * () {
     const now = new Date()
     let model = yield Comment.forge({ id: 1 }).destroy({ date: now })
