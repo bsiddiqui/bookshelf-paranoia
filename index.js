@@ -140,7 +140,11 @@ module.exports = (bookshelf, settings) => {
             query = query.transacting(options.transacting)
           }
 
-          return query.update(attrs, this.idAttribute).where(this.format(this.attributes))
+          if (this.attributes.id) {
+              return query.update(attrs, this.idAttribute).where({id: this.attributes.id});
+          } else {
+              return query.update(attrs, this.idAttribute).where(this.format(this.attributes))
+          }
         })
         .then((resp) => {
           // Check if the caller required a row to be deleted and if
