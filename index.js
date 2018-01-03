@@ -75,7 +75,6 @@ module.exports = (bookshelf, settings) => {
       }
 
       this.on('fetching', skipDeleted.bind(this))
-      this.on('fetching:collection', skipDeleted.bind(this))
     },
 
     /**
