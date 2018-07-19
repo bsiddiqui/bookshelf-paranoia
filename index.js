@@ -89,8 +89,12 @@ module.exports = (bookshelf, settings) => {
         );
       }
 
+<<<<<<< HEAD
       this.on("fetching", skipDeleted.bind(this));
       this.on("fetching:collection", skipDeleted.bind(this));
+=======
+      this.on('fetching', skipDeleted.bind(this))
+>>>>>>> upstream/master
     },
 
     /**
