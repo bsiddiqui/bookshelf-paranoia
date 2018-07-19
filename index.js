@@ -16,18 +16,21 @@ let isEmpty = require('lodash.isempty')
  */
 module.exports = (bookshelf, settings) => {
   // Add default settings
-  settings = merge({
-    field: 'deleted_at',
-    sentinel: null,
-    events: {
-      destroying: true,
-      updating: false,
-      saving: false,
-      destroyed: true,
-      updated: false,
-      saved: false
-    }
-  }, settings)
+  settings = merge(
+    {
+      field: 'deleted_at',
+      sentinel: null,
+      events: {
+        destroying: true,
+        updating: false,
+        saving: false,
+        destroyed: true,
+        updated: false,
+        saved: false
+      }
+    },
+    settings
+  )
 
   /**
    * Check if the operation needs to be patched for not retrieving
@@ -40,10 +43,17 @@ module.exports = (bookshelf, settings) => {
    */
   function skipDeleted (model, attrs, options) {
     if (!options.isEager || options.parentResponse) {
-      let softDelete = this.model ? this.model.prototype.softDelete : this.softDelete
+      let softDelete = this.model
+        ? this.model.prototype.softDelete
+        : this.softDelete
 
       if (softDelete && !options.withDeleted) {
-        options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
+        options.query
+          .whereNull(`${result(this, 'tableName')}.${settings.field}`)
+          .orWhere(
+            `${result(this, 'tableName')}.${settings.field}`,
+            '0000-00-00 00:00:00'
+          )
       }
     }
   }
@@ -59,7 +69,9 @@ module.exports = (bookshelf, settings) => {
       collectionPrototype.initialize.call(this)
 
       this.on('fetching', skipDeleted.bind(this))
-      this.on('counting', (collection, options) => skipDeleted.call(this, null, null, options))
+      this.on('counting', (collection, options) =>
+        skipDeleted.call(this, null, null, options)
+      )
     }
   })
 
@@ -69,9 +81,12 @@ module.exports = (bookshelf, settings) => {
       modelPrototype.initialize.call(this)
 
       if (this.softDelete && settings.sentinel) {
-        this.defaults = merge({
-          [settings.sentinel]: true
-        }, result(this, 'defaults'))
+        this.defaults = merge(
+          {
+            [settings.sentinel]: true
+          },
+          result(this, 'defaults')
+        )
       }
 
       this.on('fetching', skipDeleted.bind(this))
@@ -91,12 +106,15 @@ module.exports = (bookshelf, settings) => {
       if (this.softDelete && !options.hardDelete) {
         let query = this.query()
         // Add default values to options
-        options = merge({
-          method: 'update',
-          patch: true,
-          softDelete: true,
-          query: query
-        }, options)
+        options = merge(
+          {
+            method: 'update',
+            patch: true,
+            softDelete: true,
+            query: query
+          },
+          options
+        )
 
         const date = options.date ? new Date(options.date) : new Date()
 
@@ -111,68 +129,82 @@ module.exports = (bookshelf, settings) => {
         attrs = this.format(attrs)
 
         return Promise.resolve()
-        .then(() => {
-          // Don't need to trigger hooks if there's no events registered
-          if (!settings.events) return
+          .then(() => {
+            // Don't need to trigger hooks if there's no events registered
+            if (!settings.events) return
 
-          let events = []
+            let events = []
 
-          // Emulate all pre update events
-          if (settings.events.destroying) {
-            events.push(this.triggerThen('destroying', this, options).bind(this))
-          }
+            // Emulate all pre update events
+            if (settings.events.destroying) {
+              events.push(
+                this.triggerThen('destroying', this, options).bind(this)
+              )
+            }
 
-          if (settings.events.saving) {
-            events.push(this.triggerThen('saving', this, attrs, options).bind(this))
-          }
+            if (settings.events.saving) {
+              events.push(
+                this.triggerThen('saving', this, attrs, options).bind(this)
+              )
+            }
 
-          if (settings.events.updating) {
-            events.push(this.triggerThen('updating', this, attrs, options).bind(this))
-          }
+            if (settings.events.updating) {
+              events.push(
+                this.triggerThen('updating', this, attrs, options).bind(this)
+              )
+            }
 
-          // Resolve all promises in parallel like bookshelf does
-          return Promise.all(events)
-        })
-        .then(() => {
-          // Check if we need to use a transaction
-          if (options.transacting) {
-            query = query.transacting(options.transacting)
-          }
+            // Resolve all promises in parallel like bookshelf does
+            return Promise.all(events)
+          })
+          .then(() => {
+            // Check if we need to use a transaction
+            if (options.transacting) {
+              query = query.transacting(options.transacting)
+            }
 
-          return query.update(attrs, this.idAttribute).where(this.format(this.attributes))
-        })
-        .then((resp) => {
-          // Check if the caller required a row to be deleted and if
-          // events weren't totally disabled
-          if (isEmpty(resp) && options.require) {
-            throw new this.constructor.NoRowsDeletedError('No Rows Deleted')
-          } else if (!settings.events) {
-            return
-          }
+            return query
+              .update(attrs, this.idAttribute)
+              .where(this.format(this.attributes))
+          })
+          .then((resp) => {
+            // Check if the caller required a row to be deleted and if
+            // events weren't totally disabled
+            if (isEmpty(resp) && options.require) {
+              throw new this.constructor.NoRowsDeletedError('No Rows Deleted')
+            } else if (!settings.events) {
+              return
+            }
 
-          // Add previous attr for reference and reset the model to pristine state
-          this.set(attrs)
-          options.previousAttributes = this._previousAttributes
-          this._reset()
+            // Add previous attr for reference and reset the model to pristine state
+            this.set(attrs)
+            options.previousAttributes = this._previousAttributes
+            this._reset()
 
-          let events = []
+            let events = []
 
-          // Emulate all post update events
-          if (settings.events.destroyed) {
-            events.push(this.triggerThen('destroyed', this, options).bind(this))
-          }
+            // Emulate all post update events
+            if (settings.events.destroyed) {
+              events.push(
+                this.triggerThen('destroyed', this, options).bind(this)
+              )
+            }
 
-          if (settings.events.saved) {
-            events.push(this.triggerThen('saved', this, resp, options).bind(this))
-          }
+            if (settings.events.saved) {
+              events.push(
+                this.triggerThen('saved', this, resp, options).bind(this)
+              )
+            }
 
-          if (settings.events.updated) {
-            events.push(this.triggerThen('updated', this, resp, options).bind(this))
-          }
+            if (settings.events.updated) {
+              events.push(
+                this.triggerThen('updated', this, resp, options).bind(this)
+              )
+            }
 
-          return Promise.all(events)
-        })
-        .then(() => this)
+            return Promise.all(events)
+          })
+          .then(() => this)
       } else {
         return modelPrototype.destroy.call(this, options)
       }

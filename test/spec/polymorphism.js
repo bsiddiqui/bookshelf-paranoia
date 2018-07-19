@@ -17,22 +17,22 @@ lab.experiment('polymorphism', () => {
 
   lab.test('morph to one should work', co.wrap(function * () {
     let sources = yield ArticleOrTag.forge()
-    .orderBy('id', 'ASC')
-    .fetchAll({ withRelated: 'source' })
+      .orderBy('id', 'ASC')
+      .fetchAll({ withRelated: 'source' })
 
     let copy = sources.clone()
     yield sources.at(0).destroy()
 
     sources = yield ArticleOrTag.forge()
-    .orderBy('id', 'ASC')
-    .fetchAll({ withRelated: 'source' })
+      .orderBy('id', 'ASC')
+      .fetchAll({ withRelated: 'source' })
 
     let withDeleted = yield ArticleOrTag.forge()
-    .orderBy('id', 'ASC')
-    .fetchAll({
-      withRelated: 'source',
-      withDeleted: true
-    })
+      .orderBy('id', 'ASC')
+      .fetchAll({
+        withRelated: 'source',
+        withDeleted: true
+      })
 
     expect(sources.at(0).id).to.not.equal(copy.at(0).id)
     expect(sources.length).to.be.below(copy.length)
