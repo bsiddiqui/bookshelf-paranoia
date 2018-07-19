@@ -15,8 +15,8 @@ module.exports = {
   reset: () => knex.raw('SELECT name FROM sqlite_master WHERE type = "table"')
     .then((tables) => {
       let promises = tables
-      .filter((table) => !table.name.match(/^sqlite/))
-      .map((table) => knex.raw(`DROP TABLE IF EXISTS ${table.name}`))
+        .filter((table) => !table.name.match(/^sqlite/))
+        .map((table) => knex.raw(`DROP TABLE IF EXISTS ${table.name}`))
 
       return Promise.all(promises)
     })
@@ -25,4 +25,4 @@ module.exports = {
 
 // Load all models
 fs.readdirSync(`${__dirname}/models`)
-.forEach((model) => require(`${__dirname}/models/${model}`))
+  .forEach((model) => require(`${__dirname}/models/${model}`))

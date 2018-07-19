@@ -65,10 +65,10 @@ lab.experiment('general tests', () => {
   lab.test('should work with transactions', co.wrap(function * () {
     let err = yield db.bookshelf.transaction((transacting) => {
       return Comment.forge({ id: 1 })
-      .destroy({ transacting })
-      .then(() => { throw new Error('Rollback this transaction') })
+        .destroy({ transacting })
+        .then(() => { throw new Error('Rollback this transaction') })
     })
-    .catch((err) => err)
+      .catch((err) => err)
 
     expect(err.message).to.equal('Rollback this transaction')
 
@@ -79,16 +79,16 @@ lab.experiment('general tests', () => {
   lab.experiment('errors', () => {
     lab.test('should throw when required', co.wrap(function * () {
       let err = yield Comment.forge({ id: 12345 })
-      .destroy({ require: true })
-      .catch((err) => err)
+        .destroy({ require: true })
+        .catch((err) => err)
 
       expect(err).to.be.an.error('No Rows Deleted')
     }))
 
     lab.test('allows for filtered catch', co.wrap(function * () {
       let err = yield Comment.forge({ id: 12345 })
-      .destroy({ require: true })
-      .catch(db.bookshelf.Model.NoRowsDeletedError, (err) => err)
+        .destroy({ require: true })
+        .catch(db.bookshelf.Model.NoRowsDeletedError, (err) => err)
 
       expect(err).to.be.an.error('No Rows Deleted')
     }))
