@@ -48,6 +48,7 @@ module.exports = (bookshelf, settings) => {
         : this.softDelete;
 
       if (softDelete && !options.withDeleted) {
+        //Add a check for all zeroes default value.
         options.query
           .where(
             `${result(this, "tableName")}.${settings.field}`,
