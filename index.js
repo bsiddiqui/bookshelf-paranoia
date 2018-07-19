@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-let Promise = require("bluebird");
-let result = require("lodash.result");
-let merge = require("lodash.merge");
-let isEmpty = require("lodash.isempty");
+let Promise = require('bluebird');
+let result = require('lodash.result');
+let merge = require('lodash.merge');
+let isEmpty = require('lodash.isempty');
 
 /**
  * A function that can be used as a plugin for bookshelf
@@ -18,7 +18,7 @@ module.exports = (bookshelf, settings) => {
   // Add default settings
   settings = merge(
     {
-      field: "deleted_at",
+      field: 'deleted_at',
       sentinel: null,
       events: {
         destroying: true,
@@ -51,10 +51,10 @@ module.exports = (bookshelf, settings) => {
         //Add a check for all zeroes default value.
         options.query
           .where(
-            `${result(this, "tableName")}.${settings.field}`,
-            "0000-00-00 00:00:00"
+            `${result(this, 'tableName')}.${settings.field}`,
+            '0000-00-00 00:00:00'
           )
-          .orWhere(`${result(this, "tableName")}.${settings.field}`, null);
+          .orWhere(`${result(this, 'tableName')}.${settings.field}`, null);
       }
     }
   }
@@ -69,8 +69,8 @@ module.exports = (bookshelf, settings) => {
     initialize: function() {
       collectionPrototype.initialize.call(this);
 
-      this.on("fetching", skipDeleted.bind(this));
-      this.on("counting", (collection, options) =>
+      this.on('fetching', skipDeleted.bind(this));
+      this.on('counting', (collection, options) =>
         skipDeleted.call(this, null, null, options)
       );
     }
@@ -86,11 +86,11 @@ module.exports = (bookshelf, settings) => {
           {
             [settings.sentinel]: true
           },
-          result(this, "defaults")
+          result(this, 'defaults')
         );
       }
 
-      this.on("fetching", skipDeleted.bind(this));
+      this.on('fetching', skipDeleted.bind(this));
     },
 
     /**
@@ -109,7 +109,7 @@ module.exports = (bookshelf, settings) => {
         // Add default values to options
         options = merge(
           {
-            method: "update",
+            method: 'update',
             patch: true,
             softDelete: true,
             query: query
@@ -139,19 +139,19 @@ module.exports = (bookshelf, settings) => {
             // Emulate all pre update events
             if (settings.events.destroying) {
               events.push(
-                this.triggerThen("destroying", this, options).bind(this)
+                this.triggerThen('destroying', this, options).bind(this)
               );
             }
 
             if (settings.events.saving) {
               events.push(
-                this.triggerThen("saving", this, attrs, options).bind(this)
+                this.triggerThen('saving', this, attrs, options).bind(this)
               );
             }
 
             if (settings.events.updating) {
               events.push(
-                this.triggerThen("updating", this, attrs, options).bind(this)
+                this.triggerThen('updating', this, attrs, options).bind(this)
               );
             }
 
@@ -172,7 +172,7 @@ module.exports = (bookshelf, settings) => {
             // Check if the caller required a row to be deleted and if
             // events weren't totally disabled
             if (isEmpty(resp) && options.require) {
-              throw new this.constructor.NoRowsDeletedError("No Rows Deleted");
+              throw new this.constructor.NoRowsDeletedError('No Rows Deleted');
             } else if (!settings.events) {
               return;
             }
@@ -187,19 +187,19 @@ module.exports = (bookshelf, settings) => {
             // Emulate all post update events
             if (settings.events.destroyed) {
               events.push(
-                this.triggerThen("destroyed", this, options).bind(this)
+                this.triggerThen('destroyed', this, options).bind(this)
               );
             }
 
             if (settings.events.saved) {
               events.push(
-                this.triggerThen("saved", this, resp, options).bind(this)
+                this.triggerThen('saved', this, resp, options).bind(this)
               );
             }
 
             if (settings.events.updated) {
               events.push(
-                this.triggerThen("updated", this, resp, options).bind(this)
+                this.triggerThen('updated', this, resp, options).bind(this)
               );
             }
 
