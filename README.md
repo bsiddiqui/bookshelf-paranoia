@@ -7,6 +7,11 @@
 
 Protect your database from data loss by soft deleting your rows.
 
+### Unmaintained
+
+I don't use this package anymore so it's un-maintained. I still spend a little time managing small
+fixes but do so at a fairly slow pace. If you're interested in maintaining this project, please reach out to me.
+
 ### Installation
 
 After installing `bookshelf-paranoia` with `npm i --save bookshelf-paranoia`,
