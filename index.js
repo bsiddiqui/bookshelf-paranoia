@@ -49,13 +49,13 @@ module.exports = (bookshelf, settings) => {
 
       if (softDelete && !options.withDeleted) {
         options.query
-          .andWhere(qb => {
+          .andWhere((qb) => {
             qb.whereNull(`${result(this, 'tableName')}.${settings.field}`)
               .orWhere(
                 `${result(this, 'tableName')}.${settings.field}`,
                 '0000-00-00 00:00:00'
-              );
-          });
+              )
+          })
       }
     }
   }
