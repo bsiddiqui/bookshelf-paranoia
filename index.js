@@ -19,6 +19,7 @@ module.exports = (bookshelf, settings) => {
   settings = merge(
     {
       field: 'deleted_at',
+      nullValue: null,
       sentinel: null,
       events: {
         destroying: true,
@@ -48,14 +49,12 @@ module.exports = (bookshelf, settings) => {
         : this.softDelete
 
       if (softDelete && !options.withDeleted) {
-        options.query
-          .andWhere((qb) => {
-            qb.whereNull(`${result(this, 'tableName')}.${settings.field}`)
-              .orWhere(
-                `${result(this, 'tableName')}.${settings.field}`,
-                '0000-00-00 00:00:00'
-              )
-          })
+        if (settings.nullValue === null) {
+          options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
+        } else {
+          console.log('is null')
+          options.query.where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
+        }
       }
     }
   }

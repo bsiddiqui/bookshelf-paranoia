@@ -26,6 +26,33 @@ lab.experiment('general tests', () => {
     expect(model.get('deleted_at')).to.be.a.date()
   }))
 
+  lab.test('works with nullValue override', co.wrap(function * () {
+    const nullValue = '0000-00-00 00:00:00'
+
+    const bookshelf = yield customDb.sentinelTable((bookshelf) => {
+      bookshelf.plugin(require('../../'), { nullValue })
+    })
+
+    const Model = bookshelf.Model.extend({
+      tableName: 'test',
+      softDelete: true
+    })
+
+    const model = yield Model.forge({
+      id: 1,
+      deleted_at: nullValue
+    }).save()
+
+    yield model.destroy()
+
+    const deletedModel = yield Model.forge({ id: 1 }).fetch()
+    expect(deletedModel).to.be.null()
+
+    const knexModels = yield db.knex('test').select('*').where('id', 1)
+    expect(knexModels[0].deleted_at).to.be.a.number()
+    expect(model.get('deleted_at')).to.be.a.date()
+  }))
+
   lab.test('should not be able to delete twice', co.wrap(function * () {
     yield Comment.forge({ id: 1 }).destroy()
 

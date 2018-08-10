@@ -61,6 +61,12 @@ experience while using it.
 // Override the field name that holds the deletion date
 bookshelf.plugin(require('bookshelf-paranoia'), { field: 'deletedAt' })
 
+// Override the null value if you're using a database that defaults values to
+// something other than null
+bookshelf.plugin(require('bookshelf-paranoia'), {
+  nullValue: '0000-00-00 00:00:00'
+})
+
 // If you want to delete something for good, even if the model has soft deleting on
 yield User.forge({ id: 1000 }).destroy({ hardDelete: true })
 
