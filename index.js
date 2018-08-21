@@ -52,7 +52,6 @@ module.exports = (bookshelf, settings) => {
         if (settings.nullValue === null) {
           options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
         } else {
-          console.log('is null')
           options.query.where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
         }
       }
