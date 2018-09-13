@@ -4,6 +4,7 @@ let Promise = require('bluebird')
 let result = require('lodash.result')
 let merge = require('lodash.merge')
 let isEmpty = require('lodash.isempty')
+let filter = require('lodash.filter')
 
 /**
  * A function that can be used as a plugin for bookshelf
@@ -163,9 +164,13 @@ module.exports = (bookshelf, settings) => {
               query = query.transacting(options.transacting)
             }
 
+            if (this.id != null) query.where(this.format({[this.idAttribute]: this.id}))
+            if (filter(query._statements, {grouping: 'where'}).length === 0) {
+              throw new Error('A model cannot be destroyed without a "where" clause or an idAttribute.')
+            }
+
             return query
               .update(attrs, this.idAttribute)
-              .where(this.format(this.attributes))
           })
           .then((resp) => {
             // Check if the caller required a row to be deleted and if
