@@ -3,7 +3,6 @@
 let Promise = require('bluebird')
 let result = require('lodash.result')
 let merge = require('lodash.merge')
-let isEmpty = require('lodash.isempty')
 
 /**
  * A function that can be used as a plugin for bookshelf
@@ -166,11 +165,12 @@ module.exports = (bookshelf, settings) => {
             return query
               .update(attrs, this.idAttribute)
               .where(this.format(this.attributes))
+              .where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
           })
           .then((resp) => {
             // Check if the caller required a row to be deleted and if
             // events weren't totally disabled
-            if (isEmpty(resp) && options.require) {
+            if (resp === 0 && options.require) {
               throw new this.constructor.NoRowsDeletedError('No Rows Deleted')
             } else if (!settings.events) {
               return
