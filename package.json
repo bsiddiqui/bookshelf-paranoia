@@ -1,6 +1,6 @@
 {
   "name": "bookshelf-paranoia",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "Soft delete data from your database",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "soft"
   ],
   "author": "Estate <team@tryestate.com>",
+  "contributors": ["David García (https://www.linkedin.com/in/davidgarciafdz/)"],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/estate/bookshelf-paranoia/issues"
