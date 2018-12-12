@@ -112,6 +112,13 @@ lab.experiment('general tests', () => {
       expect(err).to.be.an.error('No Rows Deleted')
     }))
 
+    lab.test('should not throw when required if a row was soft deleted', co.wrap(function * () {
+      yield Comment.forge({ id: 1 }).destroy({ require: true })
+
+      let comment = yield Comment.forge({ id: 1 }).fetch()
+      expect(comment).to.be.null()
+    }))
+
     lab.test('allows for filtered catch', co.wrap(function * () {
       let err = yield Comment.forge({ id: 12345 })
         .destroy({ require: true })
