@@ -170,7 +170,7 @@ module.exports = (bookshelf, settings) => {
           .then((resp) => {
             // Check if the caller required a row to be deleted and if
             // events weren't totally disabled
-            if (resp === 0 && options.require) {
+            if (resp.length === 0 && options.require) {
               throw new this.constructor.NoRowsDeletedError('No Rows Deleted')
             } else if (!settings.events) {
               return
