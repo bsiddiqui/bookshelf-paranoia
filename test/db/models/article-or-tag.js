@@ -1,6 +1,6 @@
 'use strict'
 
-let db = require('../')
+const db = require('../')
 
 module.exports = db.bookshelf.model('ArticleOrTag', {
   tableName: 'article_or_tag',

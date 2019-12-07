@@ -48,7 +48,7 @@ let blog = yield Blog.forge({ id: 2000 }).fetch({ withRelated: 'users' })
 blog.related('users').findWhere({ id: 1000 }) // also undefined
 
 // But we didn't delete it from the database
-let user = yield knex('users').select('*').where('id', 1000)
+let user = yield knex('users').select('*').findWhere('id', 1000)
 console.log(user[0].deleted_at) // Fri Apr 15 2016 00:40:40 GMT-0300 (BRT)
 ```
 

@@ -1,21 +1,21 @@
 'use strict'
 
-let co = require('co')
-let db = require('../db')
+const co = require('co')
+const db = require('../db')
 
 exports.generate = co.wrap(function * (tableName, tableSchema, bookshelfConfig) {
   // Setup the new table
   yield db.knex.schema.createTable(tableName, tableSchema)
 
   // Create a new bookshelf instance and hook it
-  let bookshelf = require('bookshelf')(db.knex)
+  const bookshelf = require('bookshelf')(db.knex)
   bookshelfConfig.call(bookshelfConfig, bookshelf)
 
   return bookshelf
 })
 
 exports.altFieldTable = co.wrap(function * (bookshelfConfig) {
-  let bookshelf = yield exports.generate('test', (table) => {
+  const bookshelf = yield exports.generate('test', (table) => {
     table.increments()
     table.timestamp('deleted')
   }, bookshelfConfig)
@@ -27,7 +27,7 @@ exports.altFieldTable = co.wrap(function * (bookshelfConfig) {
 })
 
 exports.sentinelTable = co.wrap(function * (bookshelfConfig) {
-  let bookshelf = yield exports.generate('test', (table) => {
+  const bookshelf = yield exports.generate('test', (table) => {
     table.increments()
     table.integer('value')
     table.timestamp('deleted_at')

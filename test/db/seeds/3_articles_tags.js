@@ -1,9 +1,9 @@
 'use strict'
 
-let timestamper = require('../../fixtures/timestamper')
+const timestamper = require('../../fixtures/timestamper')
 
-exports.seed = (knex, Promise) => {
-  let articlesTags = timestamper([
+exports.seed = knex => {
+  const articlesTags = timestamper([
     { id: 1, article_id: 1, tag_id: 1 },
     { id: 2, article_id: 1, tag_id: 2 },
     { id: 3, article_id: 2, tag_id: 3 },
@@ -13,8 +13,8 @@ exports.seed = (knex, Promise) => {
     { id: 7, article_id: 3, tag_id: 1 }
   ])
 
-  return Promise.join(
+  return Promise.all([
     knex('articles_tags').del(),
     knex('articles_tags').insert(articlesTags)
-  )
+  ])
 }
