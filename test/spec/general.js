@@ -118,6 +118,7 @@ lab.experiment('general tests', () => {
       const comment = yield Comment.forge({ id: 1 }).fetch({ require: false })
       expect(comment).to.be.null()
     }))
+
   })
 
   lab.test('should preserve original query object', co.wrap(function * () {
