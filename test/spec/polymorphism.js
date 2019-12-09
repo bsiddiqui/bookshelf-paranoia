@@ -1,13 +1,13 @@
 'use strict'
 
-let co = require('co')
-let lab = exports.lab = require('lab').script()
-let expect = require('code').expect
+const co = require('co')
+const lab = exports.lab = require('@hapi/lab').script()
+const expect = require('@hapi/code').expect
 
-let db = require('../db')
-let ArticleOrTag = db.bookshelf.model('ArticleOrTag')
-let Tag = db.bookshelf.model('Tag')
-let Article = db.bookshelf.model('Article')
+const db = require('../db')
+const ArticleOrTag = db.bookshelf.model('ArticleOrTag')
+const Tag = db.bookshelf.model('Tag')
+const Article = db.bookshelf.model('Article')
 
 lab.experiment('polymorphism', () => {
   lab.beforeEach(co.wrap(function * () {
@@ -20,14 +20,14 @@ lab.experiment('polymorphism', () => {
       .orderBy('id', 'ASC')
       .fetchAll({ withRelated: 'source' })
 
-    let copy = sources.clone()
+    const copy = sources.clone()
     yield sources.at(0).destroy()
 
     sources = yield ArticleOrTag.forge()
       .orderBy('id', 'ASC')
       .fetchAll({ withRelated: 'source' })
 
-    let withDeleted = yield ArticleOrTag.forge()
+    const withDeleted = yield ArticleOrTag.forge()
       .orderBy('id', 'ASC')
       .fetchAll({
         withRelated: 'source',
@@ -41,11 +41,11 @@ lab.experiment('polymorphism', () => {
 
   lab.test('morphMany should work', co.wrap(function * () {
     let article = yield Article.forge({ id: 2 }).fetch({ withRelated: 'articlesOrTags' })
-    let clone = article.clone()
+    const clone = article.clone()
 
     yield article.related('articlesOrTags').at(0).destroy()
     article = yield Article.forge({ id: 2 }).fetch({ withRelated: 'articlesOrTags' })
-    let withDeleted = yield Article.forge({ id: 2 }).fetch({
+    const withDeleted = yield Article.forge({ id: 2 }).fetch({
       withRelated: 'articlesOrTags',
       withDeleted: true
     })
@@ -60,7 +60,7 @@ lab.experiment('polymorphism', () => {
 
     yield tag.related('articleOrTag').destroy()
     tag = yield Tag.forge({ id: 1 }).fetch({ withRelated: 'articleOrTag' })
-    let withDeleted = yield Tag.forge({ id: 1 }).fetch({
+    const withDeleted = yield Tag.forge({ id: 1 }).fetch({
       withRelated: 'articleOrTag',
       withDeleted: true
     })

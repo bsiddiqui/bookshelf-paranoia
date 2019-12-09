@@ -1,9 +1,9 @@
 'use strict'
 
-let timestamper = require('../../fixtures/timestamper')
+const timestamper = require('../../fixtures/timestamper')
 
-exports.seed = (knex, Promise) => {
-  let comments = timestamper([
+exports.seed = knex => {
+  const comments = timestamper([
     {
       id: 1,
       user_id: 1,
@@ -42,8 +42,8 @@ exports.seed = (knex, Promise) => {
     }
   ])
 
-  return Promise.join(
+  return Promise.all([
     knex('comments').del(),
     knex('comments').insert(comments)
-  )
+  ])
 }

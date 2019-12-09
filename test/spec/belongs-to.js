@@ -1,11 +1,11 @@
 'use strict'
 
-let co = require('co')
-let lab = exports.lab = require('lab').script()
-let expect = require('code').expect
+const co = require('co')
+const lab = exports.lab = require('@hapi/lab').script()
+const expect = require('@hapi/code').expect
 
-let db = require('../db')
-let Comment = db.bookshelf.model('Comment')
+const db = require('../db')
+const Comment = db.bookshelf.model('Comment')
 
 lab.experiment('belongsTo relation', () => {
   lab.beforeEach(co.wrap(function * () {

@@ -1,8 +1,7 @@
 'use strict'
 
-let Promise = require('bluebird')
-let result = require('lodash.result')
-let merge = require('lodash.merge')
+const result = require('lodash/result')
+const merge = require('lodash/merge')
 
 /**
  * A function that can be used as a plugin for bookshelf
@@ -43,23 +42,24 @@ module.exports = (bookshelf, settings) => {
    */
   function skipDeleted (model, attrs, options) {
     if (!options.isEager || options.parentResponse) {
-      let softDelete = this.model
+      const softDelete = this.model
         ? this.model.prototype.softDelete
         : this.softDelete
 
       if (softDelete && !options.withDeleted) {
         if (settings.nullValue === null) {
-          options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
+           options.query.whereNull(`${result(this, 'tableName')}.${settings.field}`)
         } else {
           options.query.where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
         }
       }
+
     }
   }
 
   // Store prototypes for later
-  let modelPrototype = bookshelf.Model.prototype
-  let collectionPrototype = bookshelf.Collection.prototype
+  const modelPrototype = bookshelf.Model.prototype
+  const collectionPrototype = bookshelf.Collection.prototype
 
   // Extends the default collection to be able to patch relational queries
   // against a set of models
@@ -132,7 +132,7 @@ module.exports = (bookshelf, settings) => {
             // Don't need to trigger hooks if there's no events registered
             if (!settings.events) return
 
-            let events = []
+            const events = []
 
             // Emulate all pre update events
             if (settings.events.destroying) {
@@ -170,7 +170,7 @@ module.exports = (bookshelf, settings) => {
           .then((resp) => {
             // Check if the caller required a row to be deleted and if
             // events weren't totally disabled
-            if (resp === 0 && options.require) {
+            if (resp.length === 0 && options.require) {
               throw new this.constructor.NoRowsDeletedError('No Rows Deleted')
             } else if (!settings.events) {
               return
@@ -181,7 +181,7 @@ module.exports = (bookshelf, settings) => {
             options.previousAttributes = this._previousAttributes
             this._reset()
 
-            let events = []
+            const events = []
 
             // Emulate all post update events
             if (settings.events.destroyed) {
