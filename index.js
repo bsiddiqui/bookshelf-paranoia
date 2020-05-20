@@ -164,7 +164,8 @@ module.exports = (bookshelf, settings) => {
 
             return query
               .update(attrs, this.idAttribute)
-              .where(this.attributes)
+              .where(this.idAttribute, this.get(this.idAttribute))
+              .where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
           })
           .then((resp) => {
             // Check if the caller required a row to be deleted and if
