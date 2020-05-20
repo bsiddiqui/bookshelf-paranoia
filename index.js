@@ -164,7 +164,7 @@ module.exports = (bookshelf, settings) => {
 
             return query
               .update(attrs, this.idAttribute)
-              .where(this.format(this.attributes))
+              .where(this.idAttribute, this.get(this.idAttribute))
               .where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
           })
           .then((resp) => {
