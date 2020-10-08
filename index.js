@@ -162,9 +162,22 @@ module.exports = (bookshelf, settings) => {
               query = query.transacting(options.transacting)
             }
 
+            // Only use primaryKey as select condition (because of jsonColumns)
+            const attributes = {}
+            attributes[`${this.idAttribute}`] = this.attributes[this.idAttribute]
+
+            // Fixed MySql warning '.returning() is not supported by mysql and will not have any effect.'
+            // @see: https://github.com/knex/knex/blob/e37aeaa31c8ef9c1b07d2e4d3ec6607e557d800d/lib/dialects/mysql/query/compiler.js#L15
+            if (query.client.config.client.includes('mysql')) {
+              return query
+                .update(attrs)
+                .where(this.format(attributes))
+                .where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
+            }
+
             return query
               .update(attrs, this.idAttribute)
-              .where(this.format(this.attributes))
+              .where(this.format(attributes))
               .where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
           })
           .then((resp) => {
