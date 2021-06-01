@@ -41,7 +41,7 @@ module.exports = (bookshelf, settings) => {
    * @param {Boolean} [options.withDeleted=false] Override the default behavior
    * and allow querying soft deleted objects
    */
-  function skipDeleted (model, attrs, options) {
+  function skipDeleted(model, attrs, options) {
     if (!options.isEager || options.parentResponse) {
       let softDelete = this.model
         ? this.model.prototype.softDelete
@@ -162,9 +162,13 @@ module.exports = (bookshelf, settings) => {
               query = query.transacting(options.transacting)
             }
 
+            this.format(this.attributes)
+
             return query
               .update(attrs, this.idAttribute)
-              .where(this.format(this.attributes))
+              .where({
+                [this.idAttribute]: this.attributes[this.idAttribute]
+              })
               .where(`${result(this, 'tableName')}.${settings.field}`, settings.nullValue)
           })
           .then((resp) => {
